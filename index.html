@@ -48,7 +48,7 @@
         .hud-item { background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 50px;
                     border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-weight: 600; backdrop-filter: blur(10px); }
 
-        #memory-log-btn { position: fixed; bottom: 30px; right: 30px; z-index: 150; width: 60px; height: 60px;
+        #memory-log-btn { position: fixed; top: 30px; right: 30px; z-index: 150; width: 60px; height: 60px;
                           border-radius: 50%; background: var(--neon-gold); color: white;
                           display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; border: none; }
 
@@ -190,6 +190,14 @@
                 height: 60px !important;
                 font-size: 1.25rem !important;
             }
+
+            #memory-log-btn {
+                top: 15px !important;
+                right: 15px !important;
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 1.1rem !important;
+            }
         }
     </style>
 </head>
@@ -242,6 +250,9 @@
         const ctx = canvas.getContext('2d');
         let gameState = { level: 0, score: 0, active: false, cameraX: 0, cameraY: 0, hasKey: 0, canDoubleJump: false, memories: [], particles: [], parallax: [], worldWidth: 3000, worldHeight: 1200, bossHealth: 100, bossActive: false, keys: {} };
         const THEME = { pink: '#ff007f', blue: '#00f2ff', gold: '#f8b500' };
+        let gameScale = 1.0;
+        let virtualWidth = 1200;
+        let virtualHeight = 800;
 
         class Particle {
             constructor(x, y, color, size, sx, sy, life) { this.x = x; this.y = y; this.color = color; this.size = size; this.sx = sx; this.sy = sy; this.life = life; this.maxLife = life; }
@@ -257,9 +268,28 @@
             ["El final está a la vista.", "No tengas miedo de las dudas.", "Lo que siento es más fuerte que el jefe final.", "Eres mi victoria más grande.", "¡Prepárate para la gran pregunta!"]
         ];
 
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initStars(); }
+        function resize() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+            
+            // Calculate scale factor based on screen size (desktop target: 1100x720)
+            gameScale = 1.0;
+            if (canvas.width < 1100) {
+                gameScale = canvas.width / 1100;
+                if (gameScale < 0.55) gameScale = 0.55; // Clamped minimum scale
+            }
+            if (canvas.height / gameScale < 720) {
+                gameScale = Math.min(gameScale, canvas.height / 720);
+                if (gameScale < 0.55) gameScale = 0.55; // Clamped minimum scale
+            }
+
+            virtualWidth = canvas.width / gameScale;
+            virtualHeight = canvas.height / gameScale;
+
+            initStars(); 
+        }
         window.addEventListener('resize', resize); resize();
-        function initStars() { gameState.parallax = []; for (let i = 0; i < 300; i++) gameState.parallax.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2, sp: 0.1 + Math.random() * 0.2 }); }
+        function initStars() { gameState.parallax = []; for (let i = 0; i < 300; i++) gameState.parallax.push({ x: Math.random() * virtualWidth, y: Math.random() * virtualHeight, s: Math.random() * 2, sp: 0.1 + Math.random() * 0.2 }); }
 
         function startGame() { 
             document.getElementById('start-screen').classList.add('hidden'); 
@@ -269,20 +299,20 @@
         }
 
         function initLevel(num) {
-            player.x = 100; player.y = canvas.height - 300; player.dy = 0; player.dx = 0; player.grounded = false; player.confidence = 100;
+            player.x = 100; player.y = virtualHeight - 300; player.dy = 0; player.dx = 0; player.grounded = false; player.confidence = 100;
             platforms = []; collectibles = []; entities = []; obstacles = [];
             gameState.score = 0; gameState.hasKey = 0; updateHUD();
 
             if (num === 1) {
                 gameState.worldWidth = 8000;
-                platforms.push({ x: 0, y: canvas.height - 100, w: 8000, h: 100, type: 'ground' });
-                for(let i=0; i<5; i++) collectibles.push({ x: 1500 + i * 1300 + Math.random() * 200, y: canvas.height - 180 - Math.random() * 50, type: 'memory', idx: i });
+                platforms.push({ x: 0, y: virtualHeight - 100, w: 8000, h: 100, type: 'ground' });
+                for(let i=0; i<5; i++) collectibles.push({ x: 1500 + i * 1300 + Math.random() * 200, y: virtualHeight - 180 - Math.random() * 50, type: 'memory', idx: i });
                 let lastObsX = 0;
                 for(let x = 800; x < 7000; x += 200) {
                     let nearMem = collectibles.some(m => Math.abs(m.x - x) < 150);
                     if (nearMem) continue;
-                    if (Math.random() < 0.25 && (x - lastObsX > 600)) { obstacles.push({ x: x, y: canvas.height - 140, w: 40, h: 40 }); lastObsX = x; }
-                    else if (Math.random() < 0.6) collectibles.push({ x: x, y: canvas.height - 150 - Math.random() * 120, type: 'sparkle', idx: -1 });
+                    if (Math.random() < 0.25 && (x - lastObsX > 600)) { obstacles.push({ x: x, y: virtualHeight - 140, w: 40, h: 40 }); lastObsX = x; }
+                    else if (Math.random() < 0.6) collectibles.push({ x: x, y: virtualHeight - 150 - Math.random() * 120, type: 'sparkle', idx: -1 });
                 }
             } else if (num === 2) {
                 gameState.worldWidth = 5000; gameState.worldHeight = 3000;
@@ -393,25 +423,29 @@
                 collectibles.push({ x: zone2Plats[8].x + zone2Plats[8].w / 2, y: zone2Plats[8].y - 50, type: 'memory', idx: 4 }); // Tier 6 (second)
 
             } else if (num === 3) {
-                gameState.worldWidth = canvas.width; gameState.worldHeight = canvas.height;
+                gameState.worldWidth = virtualWidth; gameState.worldHeight = virtualHeight;
                 gameState.bossActive = true; gameState.bossHealth = 100;
-                platforms.push({ x: 0, y: canvas.height - 100, w: canvas.width, h: 100 });
+                platforms.push({ x: 0, y: virtualHeight - 100, w: virtualWidth, h: 100 });
             }
         }
 
         function gameLoop() {
             if (!gameState.active) return;
             ctx.fillStyle = '#050515'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white'; gameState.parallax.forEach(s => { ctx.fillRect(s.x, s.y, s.s, s.s); s.x -= s.sp; if (s.x < 0) s.x = canvas.width; });
+            ctx.fillStyle = 'white'; gameState.parallax.forEach(s => { ctx.fillRect(s.x, s.y, s.s, s.s); s.x -= s.sp; if (s.x < 0) s.x = virtualWidth; });
             
-            let camX = player.x - canvas.width / 2;
-            let camY = player.y - canvas.height / 2;
-            gameState.cameraX += (camX - gameState.cameraX) * 0.1;
-            gameState.cameraY += (camY - gameState.cameraY) * 0.1;
-            gameState.cameraX = Math.max(0, Math.min(gameState.cameraX, gameState.worldWidth - canvas.width));
-            gameState.cameraY = (gameState.level === 2) ? Math.max(0, Math.min(gameState.cameraY, gameState.worldHeight - canvas.height)) : 0;
+            // Camera Look-Ahead based on horizontal velocity (player.dx) and virtual bounds
+            let lookAhead = player.dx * 18;
+            let camX = player.x - virtualWidth / 2 + lookAhead;
+            let camY = player.y - virtualHeight / 2;
+            gameState.cameraX += (camX - gameState.cameraX) * 0.08; // Smoother camera transition
+            gameState.cameraY += (camY - gameState.cameraY) * 0.08;
+            gameState.cameraX = Math.max(0, Math.min(gameState.cameraX, gameState.worldWidth - virtualWidth));
+            gameState.cameraY = (gameState.level === 2) ? Math.max(0, Math.min(gameState.cameraY, gameState.worldHeight - virtualHeight)) : 0;
 
-            ctx.save(); ctx.translate(-gameState.cameraX, -gameState.cameraY);
+            ctx.save(); 
+            ctx.scale(gameScale, gameScale);
+            ctx.translate(-gameState.cameraX, -gameState.cameraY);
             drawLevel(); updatePlayer(); updateParticles(); ctx.restore();
             requestAnimationFrame(gameLoop);
         }
@@ -428,7 +462,7 @@
             });
 
             if (gameState.level === 1) {
-                const gY = canvas.height - 100;
+                const gY = virtualHeight - 100;
                 ctx.save(); ctx.shadowBlur = 20; ctx.shadowColor = THEME.blue; ctx.strokeStyle = THEME.blue; ctx.lineWidth = 6;
                 ctx.beginPath(); ctx.moveTo(0, gY); ctx.lineTo(gameState.worldWidth, gY); ctx.stroke(); ctx.restore();
                 ctx.save(); ctx.shadowBlur = 40; ctx.shadowColor = THEME.gold; ctx.fillStyle = THEME.gold; ctx.fillRect(gameState.worldWidth - 300, gY - 400, 150, 400); ctx.restore();
@@ -452,26 +486,26 @@
                 ctx.textAlign = 'center';
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = THEME.pink;
-                ctx.fillText('Dudas y Temores ☁️', canvas.width/2, 40);
+                ctx.fillText('Dudas y Temores ☁️', virtualWidth/2, 40);
                 
                 // Background Health Bar
                 ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
-                ctx.fillRect(canvas.width/2 - 150, 55, 300, 16);
+                ctx.fillRect(virtualWidth/2 - 150, 55, 300, 16);
                 
                 // Foreground Health Bar
                 ctx.fillStyle = THEME.pink;
                 ctx.shadowColor = THEME.pink;
-                ctx.fillRect(canvas.width/2 - 150, 55, gameState.bossHealth * 3, 16);
+                ctx.fillRect(virtualWidth/2 - 150, 55, gameState.bossHealth * 3, 16);
                 ctx.restore();
 
                 // Draw Cloud Emoji centered
                 ctx.font = '150px serif'; 
-                ctx.fillText('☁️', canvas.width/2 - 75, 200);
+                ctx.fillText('☁️', virtualWidth/2 - 75, 200);
 
                 // Raindrops fall directly from the cloud
                 if (Math.random() > 0.90) {
                     entities.push({ 
-                        x: canvas.width/2 - 80 + Math.random() * 160, 
+                        x: virtualWidth/2 - 80 + Math.random() * 160, 
                         y: 180, 
                         dy: 4 + Math.random() * 3, 
                         type: 'rain' 
@@ -487,7 +521,7 @@
 
                 if (e.type === 'rain') { 
                     e.y += e.dy; 
-                    if (e.y > canvas.height) { 
+                    if (e.y > virtualHeight) { 
                         entities.splice(i, 1); 
                         continue; 
                     } 
@@ -518,7 +552,7 @@
                         entities.splice(i, 1); 
                         continue; 
                     } 
-                    if (gameState.bossActive && e.y < 300 && Math.abs(e.x - canvas.width/2) < 100) { 
+                    if (gameState.bossActive && e.y < 300 && Math.abs(e.x - virtualWidth/2) < 100) { 
                         gameState.bossHealth -= 5; 
                         entities.splice(i, 1); 
                         if (gameState.bossHealth <= 0) {
@@ -556,7 +590,7 @@
             });
 
             if (gameState.bossActive && gameState.keys['Space']) { if (!player.lastS || Date.now() - player.lastS > 300) { entities.push({ x: player.x + 10, y: player.y, type: 'heart_shot' }); player.lastS = Date.now(); } }
-            let fL = (gameState.level === 2) ? gameState.worldHeight : canvas.height;
+            let fL = (gameState.level === 2) ? gameState.worldHeight : virtualHeight;
             if (player.y > fL + 300) initLevel(gameState.level);
 
             ctx.save(); ctx.shadowBlur = 30; ctx.shadowColor = THEME.pink; ctx.font = '50px serif'; ctx.textAlign = 'center'; ctx.fillText('❤️', player.x + 25, player.y + 40); ctx.restore();
