@@ -57,6 +57,74 @@
         .modal-card { background: #111; border: 2px solid var(--neon-gold); padding: 3rem; border-radius: 30px; max-width: 500px; text-align: center; color: white; }
 
         #noBtn { position: absolute; background: #333; color: white; padding: 10px 25px; border-radius: 50px; border: none; cursor: pointer; }
+        
+        /* Mobile Touch Controls CSS */
+        #mobile-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-sizing: border-box;
+            pointer-events: none;
+            z-index: 160;
+        }
+
+        .mobile-group-left, .mobile-group-right {
+            display: flex;
+            gap: 15px;
+            pointer-events: auto;
+        }
+
+        .touch-btn {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: rgba(10, 10, 25, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            color: white;
+            font-size: 1.6rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
+            transition: background 0.1s, transform 0.1s, border-color 0.1s, box-shadow 0.1s;
+            outline: none;
+            border-style: solid;
+        }
+
+        .touch-btn:active {
+            background: rgba(0, 242, 255, 0.3);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue);
+            transform: scale(0.88);
+        }
+
+        #touch-jump:active {
+            background: rgba(255, 0, 127, 0.3);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 25px var(--neon-pink);
+        }
+
+        #touch-shoot {
+            background: rgba(255, 0, 127, 0.15);
+            border-color: rgba(255, 0, 127, 0.35);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.15);
+        }
+
+        #touch-shoot:active {
+            background: rgba(255, 0, 127, 0.45);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 30px var(--neon-pink);
+        }
+
         canvas { display: block; }
         .hidden { display: none !important; }
     </style>
@@ -92,6 +160,18 @@
 
     <div id="modal-overlay"><div class="modal-card"><span id="modal-icon" style="font-size: 4rem;">📖</span><p id="modal-text"></p><button class="btn" onclick="closeModal()">Continuar</button></div></div>
     <canvas id="gameCanvas"></canvas>
+    
+    <!-- Mobile Touch Controls -->
+    <div id="mobile-controls" class="hidden">
+        <div class="mobile-group-left">
+            <button id="touch-left" class="touch-btn">◀</button>
+            <button id="touch-right" class="touch-btn">▶</button>
+        </div>
+        <div class="mobile-group-right">
+            <button id="touch-shoot" class="touch-btn hidden">💖</button>
+            <button id="touch-jump" class="touch-btn">▲</button>
+        </div>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -436,6 +516,16 @@
             } else {
                 cH.classList.add('hidden');
             }
+
+            // Toggle touch shooting button in Level 3
+            let touchShoot = document.getElementById('touch-shoot');
+            if (touchShoot && isTouchDevice) {
+                if (gameState.level === 3) {
+                    touchShoot.classList.remove('hidden');
+                } else {
+                    touchShoot.classList.add('hidden');
+                }
+            }
         }
 
         function toggleLog() { alert("RECUERDOS ENCONTRADOS:\n\n" + gameState.memories.join("\n\n")); }
@@ -447,6 +537,47 @@
             } 
         });
         window.addEventListener('keyup', (e) => gameState.keys[e.code] = false);
+
+        // Touchscreen Controls Initialization
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (isTouchDevice) {
+            document.getElementById('mobile-controls').classList.remove('hidden');
+            initTouchControls();
+        }
+
+        function initTouchControls() {
+            const btnLeft = document.getElementById('touch-left');
+            const btnRight = document.getElementById('touch-right');
+            const btnJump = document.getElementById('touch-jump');
+            const btnShoot = document.getElementById('touch-shoot');
+
+            const bindTouch = (btn, keyName) => {
+                if (!btn) return;
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    gameState.keys[keyName] = true;
+                    if (keyName === 'ArrowUp') {
+                        if (player.grounded) { 
+                            player.dy = -16; 
+                            player.grounded = false; 
+                        } else if (gameState.canDoubleJump && !player.doubleJumped) { 
+                            player.dy = -14; 
+                            player.doubleJumped = true; 
+                        } 
+                    }
+                }, { passive: false });
+
+                btn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    gameState.keys[keyName] = false;
+                }, { passive: false });
+            };
+
+            bindTouch(btnLeft, 'ArrowLeft');
+            bindTouch(btnRight, 'ArrowRight');
+            bindTouch(btnJump, 'ArrowUp');
+            bindTouch(btnShoot, 'Space');
+        }
 
         let yesScale = 1.0;
         let noScale = 1.0;
