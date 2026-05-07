@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Una Gran Aventura de Amor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Pacifico&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
@@ -15,189 +16,214 @@
             --bg-deep: #050515;
         }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: 'Outfit', sans-serif; overflow: hidden;
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
             background-color: var(--bg-deep);
         }
 
         #ui-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            pointer-events: none; z-index: 100;
-        }
-
-        .glass-panel {
-            background: rgba(10, 10, 25, 0.9); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 35px;
-            padding: 3rem; width: 85%; max-width: 550px; text-align: center;
-            box-shadow: 0 0 60px rgba(255, 0, 127, 0.3);
-            pointer-events: auto; color: white;
-        }
-
-        h1 { font-family: 'Pacifico', cursive; font-size: 2.8rem; margin-bottom: 1rem;
-             background: linear-gradient(to right, var(--neon-pink), var(--neon-blue), var(--neon-gold));
-             -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-
-        .btn { background: linear-gradient(45deg, var(--neon-pink), #ff4b2b);
-               color: white; border: none; padding: 15px 40px; border-radius: 60px;
-               font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 0 30px var(--neon-pink); }
-
-        #hud { position: fixed; top: 30px; left: 30px; z-index: 150; display: flex; flex-direction: column; gap: 10px; }
-        .hud-item { background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 50px;
-                    border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-weight: 600; backdrop-filter: blur(10px); }
-
-        #memory-log-btn { position: fixed; top: 30px; right: 30px; z-index: 150; width: 60px; height: 60px;
-                          border-radius: 50%; background: var(--neon-gold); color: white;
-                          display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; border: none; }
-
-        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
-                         display: none; justify-content: center; align-items: center; z-index: 200; }
-        .modal-card { background: #111; border: 2px solid var(--neon-gold); padding: 3rem; border-radius: 30px; max-width: 500px; text-align: center; color: white; }
-
-        #noBtn { position: absolute; background: #333; color: white; padding: 10px 25px; border-radius: 50px; border: none; cursor: pointer; }
-        
-        /* Mobile Touch Controls CSS */
-        #mobile-controls {
             position: fixed;
-            bottom: 30px;
+            top: 0;
             left: 0;
             width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-sizing: border-box;
-            pointer-events: none;
-            z-index: 160;
-        }
-
-        .mobile-group-left, .mobile-group-right {
-            display: flex;
-            gap: 15px;
-            pointer-events: auto;
-        }
-
-        .touch-btn {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            background: rgba(10, 10, 25, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 2px solid rgba(255, 255, 255, 0.18);
-            color: white;
-            font-size: 1.6rem;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
-            transition: background 0.1s, transform 0.1s, border-color 0.1s, box-shadow 0.1s;
-            outline: none;
-            border-style: solid;
+            pointer-events: none;
+            z-index: 100;
         }
 
-        .touch-btn:active {
-            background: rgba(0, 242, 255, 0.3);
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 25px var(--neon-blue);
-            transform: scale(0.88);
+        .glass-panel {
+            background: rgba(10, 10, 25, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 35px;
+            padding: 3rem;
+            width: 85%;
+            max-width: 550px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 0, 127, 0.3);
+            pointer-events: auto;
+            color: white;
         }
 
-        #touch-jump:active {
-            background: rgba(255, 0, 127, 0.3);
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 25px var(--neon-pink);
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--neon-pink), var(--neon-blue), var(--neon-gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        #touch-shoot {
-            background: rgba(255, 0, 127, 0.15);
-            border-color: rgba(255, 0, 127, 0.35);
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.15);
+        .btn {
+            background: linear-gradient(45deg, var(--neon-pink), #ff4b2b);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        #touch-shoot:active {
-            background: rgba(255, 0, 127, 0.45);
-            border-color: var(--neon-pink);
+        .btn:hover {
+            transform: translateY(-3px);
             box-shadow: 0 0 30px var(--neon-pink);
         }
 
-        canvas { display: block; }
-        .hidden { display: none !important; }
+        #hud {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-        /* Mobile and Tablet Responsive Media Queries */
-        @media (max-width: 768px) {
-            #hud {
-                top: 15px !important;
-                left: 15px !important;
-                flex-direction: row !important;
-                flex-wrap: wrap;
-                gap: 8px !important;
-            }
+        .hud-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
 
-            .hud-item {
-                padding: 6px 14px !important;
-                font-size: 0.8rem !important;
-            }
+        #memory-log-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 150;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--neon-gold);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            pointer-events: auto;
+            border: none;
+        }
 
-            .glass-panel {
-                padding: 1.5rem !important;
-                width: 90% !important;
-                border-radius: 25px !important;
-            }
+        #modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
 
-            h1 {
-                font-size: 1.9rem !important;
-            }
+        .modal-card {
+            background: #111;
+            border: 2px solid var(--neon-gold);
+            padding: 3rem;
+            border-radius: 30px;
+            max-width: 500px;
+            text-align: center;
+            color: white;
+        }
 
-            p {
-                font-size: 0.9rem !important;
-                line-height: 1.4 !important;
-            }
+        #noBtn {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+        }
 
-            #proposal-question {
-                font-size: 1.55rem !important;
-                margin-top: 0.8rem !important;
-                margin-bottom: 1.5rem !important;
-            }
+        canvas {
+            display: block;
+        }
 
-            .btn {
-                padding: 10px 25px !important;
-                font-size: 0.9rem !important;
-            }
+        .hidden {
+            display: none !important;
+        }
 
-            #noBtn {
-                padding: 10px 25px !important;
-            }
+        #touch-controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+            pointer-events: auto;
+        }
+        .touch-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .touch-btn:active { background: rgba(255, 255, 255, 0.4); }
 
-            .modal-card {
-                padding: 1.5rem !important;
-                width: 85% !important;
-                border-radius: 20px !important;
-                font-size: 0.9rem !important;
-            }
+        #level-intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            background: rgba(5, 5, 21, 0.85);
+            backdrop-filter: blur(15px);
+        }
 
-            #mobile-controls {
-                bottom: 15px !important;
-                padding: 0 15px !important;
-            }
+        #music-toggle-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 150;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            pointer-events: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            font-size: 1.5rem;
+            transition: 0.3s;
+        }
 
-            .touch-btn {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 1.25rem !important;
-            }
-
-            #memory-log-btn {
-                top: 15px !important;
-                right: 15px !important;
-                width: 45px !important;
-                height: 45px !important;
-                font-size: 1.1rem !important;
-            }
+        #music-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
         }
     </style>
 </head>
@@ -208,111 +234,146 @@
         <div class="hud-item" id="score-hud">RECUERDOS: 0/5</div>
         <div class="hud-item hidden" id="key-hud">🔑 LLAVES: 0/3</div>
         <div class="hud-item hidden" id="ability-hud">✨ SALTO DOBLE ACTIVO</div>
-        <div class="hud-item hidden" id="confidence-hud" style="display: flex; align-items: center; gap: 8px;">❤️ CONFIANZA: 100%</div>
+        <div class="hud-item hidden" id="confidence-hud">❤️ CONFIANZA: 100%</div>
+    </div>
+
+    <div id="touch-controls" class="hidden">
+        <div class="touch-btn" id="ctrl-left">⬅️</div>
+        <div class="touch-btn" id="ctrl-right">➡️</div>
+        <div class="touch-btn" id="ctrl-jump">🚀</div>
     </div>
 
     <button id="memory-log-btn" class="hidden" onclick="toggleLog()">📖</button>
+    <button id="music-toggle-btn" class="hidden" onclick="toggleMusic()">🔊</button>
+
+    <audio id="bg-music" loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="ui-layer">
         <div id="start-screen" class="glass-panel">
             <h1>Aventura del Corazón</h1>
-            <p>Explora, salta y recolecta nuestros momentos más bellos. Solo superando todos los desafíos descubrirás el secreto final.</p>
+            <p>Explora, salta y recolecta nuestros momentos más bellos. Solo superando todos los desafíos descubrirás el
+                secreto final.</p>
             <button class="btn" onclick="startGame()">Comenzar</button>
         </div>
         <div id="proposal-screen" class="glass-panel hidden">
             <h1>¡Victoria!</h1>
             <p id="typing-text" style="min-height: 5rem; font-style: italic; line-height: 1.6;"></p>
-            <h2 id="proposal-question" class="hidden" style="font-family: 'Pacifico', cursive; font-size: 2.3rem; color: var(--neon-pink); text-shadow: 0 0 15px var(--neon-pink); margin-top: 1rem; margin-bottom: 2rem;">¿Quieres casarte conmigo? 💍</h2>
-            <div id="proposal-buttons" class="hidden" style="margin-top: 2rem; display: flex; justify-content: center; align-items: center; gap: 20px; min-height: 80px;">
-                <button id="yesBtn" class="btn" onclick="acceptProposal()" style="position: relative !important; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 15px 40px; border-radius: 60px;">SÍ, QUIERO ❤️</button>
-                <button id="noBtn" class="btn" onclick="shrinkNo()" style="position: relative !important; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 15px 40px; border-radius: 60px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.25); color: white;">No</button>
+            <h2 id="proposal-question" class="hidden"
+                style="font-family: 'Pacifico', cursive; font-size: 2.3rem; color: var(--neon-pink); text-shadow: 0 0 15px var(--neon-pink); margin-top: 1rem; margin-bottom: 2rem;">
+                ¿Quieres empezar a escribir una historia juntos?</h2>
+            <div style="margin-top: 2rem; position: relative; height: 80px;">
+                <button id="yesBtn" class="btn hidden" onclick="acceptProposal()">SÍ, QUIERO ❤️</button>
+            </div>
+        </div>
+        <div id="level-intro-screen" class="hidden">
+            <div class="glass-panel">
+                <h1 id="intro-level-title">NIVEL 1</h1>
+                <p id="intro-level-desc">Descripción del nivel...</p>
+                <button class="btn" onclick="startLevelAfterIntro()">Iniciar Nivel</button>
             </div>
         </div>
     </div>
 
-    <div id="modal-overlay"><div class="modal-card"><span id="modal-icon" style="font-size: 4rem;">📖</span><p id="modal-text"></p><button class="btn" onclick="closeModal()">Continuar</button></div></div>
-    <canvas id="gameCanvas"></canvas>
-    
-    <!-- Mobile Touch Controls -->
-    <div id="mobile-controls" class="hidden">
-        <div class="mobile-group-left">
-            <button id="touch-left" class="touch-btn">◀</button>
-            <button id="touch-right" class="touch-btn">▶</button>
-        </div>
-        <div class="mobile-group-right">
-            <button id="touch-shoot" class="touch-btn hidden">💖</button>
-            <button id="touch-jump" class="touch-btn">▲</button>
+    <!-- Move No button here to avoid containing block issues from glass-panel filters -->
+    <button id="noBtn" class="btn hidden" onmouseover="moveNo()" style="position: fixed; z-index: 9999;">No</button>
+
+    <div id="modal-overlay">
+        <div class="modal-card"><span id="modal-icon" style="font-size: 4rem;">📖</span>
+            <p id="modal-text"></p><button class="btn" onclick="closeModal()">Continuar</button>
         </div>
     </div>
+    <canvas id="gameCanvas"></canvas>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let gameState = { level: 0, score: 0, active: false, cameraX: 0, cameraY: 0, hasKey: 0, canDoubleJump: false, memories: [], particles: [], parallax: [], worldWidth: 3000, worldHeight: 1200, bossHealth: 100, bossActive: false, keys: {} };
+        let gameState = { level: 0, score: 0, active: false, isLooping: false, cameraX: 0, cameraY: 0, hasKey: 0, canDoubleJump: false, memories: [], particles: [], parallax: [], worldWidth: 3000, worldHeight: 1200, bossHealth: 100, bossActive: false, keys: {} };
         const THEME = { pink: '#ff007f', blue: '#00f2ff', gold: '#f8b500' };
-        let gameScale = 1.0;
-        let virtualWidth = 1200;
-        let virtualHeight = 800;
 
         class Particle {
             constructor(x, y, color, size, sx, sy, life) { this.x = x; this.y = y; this.color = color; this.size = size; this.sx = sx; this.sy = sy; this.life = life; this.maxLife = life; }
             update() { this.x += this.sx; this.y += this.sy; this.life -= 0.02; }
-            draw() { ctx.save(); ctx.globalAlpha = this.life / this.maxLife; ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); ctx.restore(); }
+            draw() { ctx.save(); ctx.globalAlpha = this.life / this.maxLife; ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
         }
 
         let player = { x: 100, y: 0, w: 50, h: 50, dy: 0, dx: 0, grounded: false, doubleJumped: false, trailTimer: 0, confidence: 100 };
         let platforms = [], collectibles = [], entities = [], obstacles = [];
+        const levelIntros = [
+            { title: "Nivel 1: El Inicio de Todo", desc: "Donde todo comenzó. Recolecta los 5 recuerdos de nuestros primeros días para abrir el camino hacia adelante." },
+            { title: "Nivel 2: Creciendo Juntos", desc: "El camino se vuelve más difícil. Encuentra las 3 llaves doradas y usa el poder del doble salto para cruzar el gran vacío." },
+            { title: "Nivel 3: El Desafío Final", desc: "Las dudas intentarán detenerte, pero nuestro amor es más fuerte. Usa tus disparos de corazón para vencer los temores finales." }
+        ];
         const clues = [
             ["Aquel primer mes fue el inicio de todo.", "Tu mirada iluminó mi oscuridad.", "Nuestras risas son mi motor diario.", "Eres mi lugar seguro.", "Esta aventura apenas comienza."],
             ["El camino es largo, pero vale la pena.", "Cada salto nos acerca más.", "He guardado cada detalle tuyo aquí.", "La llave del corazón está cerca.", "Juntos podemos con todo."],
             ["El final está a la vista.", "No tengas miedo de las dudas.", "Lo que siento es más fuerte que el jefe final.", "Eres mi victoria más grande.", "¡Prepárate para la gran pregunta!"]
         ];
 
-        function resize() { 
-            canvas.width = window.innerWidth; 
-            canvas.height = window.innerHeight; 
-            
-            // Calculate scale factor based on screen size (desktop target: 1100x720)
-            gameScale = 1.0;
-            if (canvas.width < 1100) {
-                gameScale = canvas.width / 1100;
-                if (gameScale < 0.55) gameScale = 0.55; // Clamped minimum scale
-            }
-            if (canvas.height / gameScale < 720) {
-                gameScale = Math.min(gameScale, canvas.height / 720);
-                if (gameScale < 0.55) gameScale = 0.55; // Clamped minimum scale
-            }
-
-            virtualWidth = canvas.width / gameScale;
-            virtualHeight = canvas.height / gameScale;
-
-            initStars(); 
-        }
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initStars(); }
         window.addEventListener('resize', resize); resize();
-        function initStars() { gameState.parallax = []; for (let i = 0; i < 300; i++) gameState.parallax.push({ x: Math.random() * virtualWidth, y: Math.random() * virtualHeight, s: Math.random() * 2, sp: 0.1 + Math.random() * 0.2 }); }
+        function initStars() { gameState.parallax = []; for (let i = 0; i < 300; i++) gameState.parallax.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2, sp: 0.1 + Math.random() * 0.2 }); }
 
-        function startGame() { 
-            document.getElementById('start-screen').classList.add('hidden'); 
-            document.getElementById('hud').classList.remove('hidden'); 
-            document.getElementById('memory-log-btn').classList.remove('hidden'); 
-            gameState.level = 1; initLevel(1); gameState.active = true; requestAnimationFrame(gameLoop); 
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            document.getElementById('memory-log-btn').classList.remove('hidden');
+            document.getElementById('music-toggle-btn').classList.remove('hidden');
+            
+            const music = document.getElementById('bg-music');
+            music.volume = 0.5;
+            music.play().catch(e => console.log("Interacción requerida para audio"));
+            
+            showLevelIntro(1);
+        }
+
+        function showLevelIntro(num) {
+            gameState.active = false;
+            gameState.level = num;
+            const intro = levelIntros[num - 1];
+            document.getElementById('intro-level-title').innerText = intro.title;
+            document.getElementById('intro-level-desc').innerText = intro.desc;
+            document.getElementById('level-intro-screen').classList.remove('hidden');
+        }
+
+        function startLevelAfterIntro() {
+            document.getElementById('level-intro-screen').classList.add('hidden');
+            initLevel(gameState.level);
+            gameState.active = true;
+            if (!gameState.isLooping) {
+                gameState.isLooping = true;
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            const btn = document.getElementById('music-toggle-btn');
+            if (music.paused) {
+                music.play();
+                btn.innerText = '🔊';
+            } else {
+                music.pause();
+                btn.innerText = '🔇';
+            }
         }
 
         function initLevel(num) {
-            player.x = 100; player.y = virtualHeight - 300; player.dy = 0; player.dx = 0; player.grounded = false; player.confidence = 100;
+            player.x = 100; player.y = canvas.height - 300; player.dy = 0; player.dx = 0; player.grounded = false; player.confidence = 100;
             platforms = []; collectibles = []; entities = []; obstacles = [];
             gameState.score = 0; gameState.hasKey = 0; updateHUD();
 
             if (num === 1) {
                 gameState.worldWidth = 8000;
-                platforms.push({ x: 0, y: virtualHeight - 100, w: 8000, h: 100, type: 'ground' });
-                for(let i=0; i<5; i++) collectibles.push({ x: 1500 + i * 1300 + Math.random() * 200, y: virtualHeight - 180 - Math.random() * 50, type: 'memory', idx: i });
+                platforms.push({ x: 0, y: canvas.height - 100, w: 8000, h: 100, type: 'ground' });
+                for (let i = 0; i < 5; i++) collectibles.push({ x: 1500 + i * 1300 + Math.random() * 200, y: canvas.height - 180 - Math.random() * 50, type: 'memory', idx: i });
                 let lastObsX = 0;
-                for(let x = 800; x < 7000; x += 200) {
+                for (let x = 800; x < 7000; x += 200) {
                     let nearMem = collectibles.some(m => Math.abs(m.x - x) < 150);
                     if (nearMem) continue;
-                    if (Math.random() < 0.25 && (x - lastObsX > 600)) { obstacles.push({ x: x, y: virtualHeight - 140, w: 40, h: 40 }); lastObsX = x; }
-                    else if (Math.random() < 0.6) collectibles.push({ x: x, y: virtualHeight - 150 - Math.random() * 120, type: 'sparkle', idx: -1 });
+                    if (Math.random() < 0.25 && (x - lastObsX > 600)) { obstacles.push({ x: x, y: canvas.height - 140, w: 40, h: 40 }); lastObsX = x; }
+                    else if (Math.random() < 0.6) collectibles.push({ x: x, y: canvas.height - 150 - Math.random() * 120, type: 'sparkle', idx: -1 });
                 }
             } else if (num === 2) {
                 gameState.worldWidth = 5000; gameState.worldHeight = 3000;
@@ -324,7 +385,7 @@
 
                 // --- ZONE 1: THE FLOATING GARDENS (y: 2900 to 1500) ---
                 // Single jump only. Highly varied shapes, terraces, and vertical zigzags.
-                
+
                 // Tier 1 (y: 2750)
                 zone1Plats.push({ x: 300, y: 2750, w: 250, h: 20 });
                 zone1Plats.push({ x: 650, y: 2750, w: 200, h: 20 }); // A stepping stone
@@ -353,7 +414,7 @@
 
                 // Tier 7 (y: 1550) - Altar leading to the Powerup Altar
                 zone1Plats.push({ x: 1300, y: 1550, w: 250, h: 20 });
-                
+
                 // The Powerup Altar (y: 1450) - Safe resting zone
                 let powerupAltar = { x: 1600, y: 1450, w: 400, h: 20 };
                 zone1Plats.push(powerupAltar);
@@ -364,7 +425,7 @@
 
                 // --- ZONE 2: THE SKY CHASM (y: 1400 to 100) ---
                 // Double jump required. Massive dynamic jumps with safety nets below!
-                
+
                 // Tier 1 (y: 1280) - Large jump to the right with a safety net
                 zone2Plats.push({ x: 2100, y: 1280, w: 220, h: 20 }); // Main
                 platforms.push({ x: 2000, y: 1480, w: 450, h: 20, type: 'safety_net' }); // Safety Net
@@ -423,29 +484,53 @@
                 collectibles.push({ x: zone2Plats[8].x + zone2Plats[8].w / 2, y: zone2Plats[8].y - 50, type: 'memory', idx: 4 }); // Tier 6 (second)
 
             } else if (num === 3) {
-                gameState.worldWidth = virtualWidth; gameState.worldHeight = virtualHeight;
+                gameState.worldWidth = canvas.width; gameState.worldHeight = canvas.height;
                 gameState.bossActive = true; gameState.bossHealth = 100;
-                platforms.push({ x: 0, y: virtualHeight - 100, w: virtualWidth, h: 100 });
+                platforms.push({ x: 0, y: canvas.height - 100, w: canvas.width, h: 100 });
+                // Reset player and game state for level 3 restart
+                player.x = 100;
+                player.y = canvas.height - 300;
+                player.dx = 0; player.dy = 0;
+                player.confidence = 100;
+                player.grounded = false;
+                player.doubleJumped = false;
+                entities = [];
+                gameState.active = true;
+                // Ensure game loop is running
+                if (!gameState.isLooping) {
+                    gameState.isLooping = true;
+                    requestAnimationFrame(gameLoop);
+                }
             }
         }
 
         function gameLoop() {
-            if (!gameState.active) return;
+            if (!gameState.active) {
+                gameState.isLooping = false;
+                return;
+            }
+            gameState.isLooping = true;
             ctx.fillStyle = '#050515'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white'; gameState.parallax.forEach(s => { ctx.fillRect(s.x, s.y, s.s, s.s); s.x -= s.sp; if (s.x < 0) s.x = virtualWidth; });
-            
-            // Camera Look-Ahead based on horizontal velocity (player.dx) and virtual bounds
-            let lookAhead = player.dx * 18;
-            let camX = player.x - virtualWidth / 2 + lookAhead;
-            let camY = player.y - virtualHeight / 2;
-            gameState.cameraX += (camX - gameState.cameraX) * 0.08; // Smoother camera transition
-            gameState.cameraY += (camY - gameState.cameraY) * 0.08;
-            gameState.cameraX = Math.max(0, Math.min(gameState.cameraX, gameState.worldWidth - virtualWidth));
-            gameState.cameraY = (gameState.level === 2) ? Math.max(0, Math.min(gameState.cameraY, gameState.worldHeight - virtualHeight)) : 0;
+            ctx.fillStyle = 'white'; gameState.parallax.forEach(s => { ctx.fillRect(s.x, s.y, s.s, s.s); s.x -= s.sp; if (s.x < 0) s.x = canvas.width; });
 
-            ctx.save(); 
-            ctx.scale(gameScale, gameScale);
-            ctx.translate(-gameState.cameraX, -gameState.cameraY);
+            let targetCamX = player.x - canvas.width / 2;
+            let targetCamY = player.y - canvas.height / 2;
+
+            if (gameState.level === 1) {
+                // Keep player at 25% from left to see more of what's ahead
+                targetCamX = player.x - canvas.width * 0.25;
+            } else if (gameState.level === 2) {
+                // Keep player at 66% from top (1/3 from bottom area) to see platforms above
+                targetCamY = player.y - canvas.height * 0.66;
+            }
+
+            gameState.cameraX += (targetCamX - gameState.cameraX) * 0.1;
+            gameState.cameraY += (targetCamY - gameState.cameraY) * 0.1;
+
+            gameState.cameraX = Math.max(0, Math.min(gameState.cameraX, gameState.worldWidth - canvas.width));
+            gameState.cameraY = (gameState.level === 2) ? Math.max(0, Math.min(gameState.cameraY, gameState.worldHeight - canvas.height)) : 0;
+
+            ctx.save(); ctx.translate(-gameState.cameraX, -gameState.cameraY);
             drawLevel(); updatePlayer(); updateParticles(); ctx.restore();
             requestAnimationFrame(gameLoop);
         }
@@ -462,7 +547,7 @@
             });
 
             if (gameState.level === 1) {
-                const gY = virtualHeight - 100;
+                const gY = canvas.height - 100;
                 ctx.save(); ctx.shadowBlur = 20; ctx.shadowColor = THEME.blue; ctx.strokeStyle = THEME.blue; ctx.lineWidth = 6;
                 ctx.beginPath(); ctx.moveTo(0, gY); ctx.lineTo(gameState.worldWidth, gY); ctx.stroke(); ctx.restore();
                 ctx.save(); ctx.shadowBlur = 40; ctx.shadowColor = THEME.gold; ctx.fillStyle = THEME.gold; ctx.fillRect(gameState.worldWidth - 300, gY - 400, 150, 400); ctx.restore();
@@ -473,7 +558,8 @@
                 obstacles.forEach(o => { ctx.font = '40px serif'; ctx.fillText('🌑', o.x, o.y + 35); if (Math.abs(player.x - o.x) < 40 && Math.abs(player.y - o.y) < 40) initLevel(1); });
             }
 
-            collectibles.forEach(c => { ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = c.type === 'memory' ? THEME.gold : (c.type === 'key' ? THEME.gold : THEME.blue);
+            collectibles.forEach(c => {
+                ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = c.type === 'memory' ? THEME.gold : (c.type === 'key' ? THEME.gold : THEME.blue);
                 ctx.font = '40px serif'; let icon = '✨'; if (c.type === 'powerup') icon = '⚡'; if (c.type === 'key') icon = '🔑'; if (c.type === 'sparkle') icon = '⭐';
                 ctx.fillText(icon, c.x, c.y); ctx.restore();
             });
@@ -486,29 +572,29 @@
                 ctx.textAlign = 'center';
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = THEME.pink;
-                ctx.fillText('Dudas y Temores ☁️', virtualWidth/2, 40);
-                
+                ctx.fillText('Dudas y Temores ☁️', canvas.width / 2, 40);
+
                 // Background Health Bar
                 ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
-                ctx.fillRect(virtualWidth/2 - 150, 55, 300, 16);
-                
+                ctx.fillRect(canvas.width / 2 - 150, 55, 300, 16);
+
                 // Foreground Health Bar
                 ctx.fillStyle = THEME.pink;
                 ctx.shadowColor = THEME.pink;
-                ctx.fillRect(virtualWidth/2 - 150, 55, gameState.bossHealth * 3, 16);
+                ctx.fillRect(canvas.width / 2 - 150, 55, gameState.bossHealth * 3, 16);
                 ctx.restore();
 
                 // Draw Cloud Emoji centered
-                ctx.font = '150px serif'; 
-                ctx.fillText('☁️', virtualWidth/2 - 75, 200);
+                ctx.font = '150px serif';
+                ctx.fillText('☁️', canvas.width / 2 - 75, 200);
 
                 // Raindrops fall directly from the cloud
                 if (Math.random() > 0.90) {
-                    entities.push({ 
-                        x: virtualWidth/2 - 80 + Math.random() * 160, 
-                        y: 180, 
-                        dy: 4 + Math.random() * 3, 
-                        type: 'rain' 
+                    entities.push({
+                        x: canvas.width / 2 - 80 + Math.random() * 160,
+                        y: 180,
+                        dy: 4 + Math.random() * 3,
+                        type: 'rain'
                     });
                 }
             }
@@ -516,16 +602,16 @@
             // High-performance entity loop (backwards to prevent array splicing issues)
             for (let i = entities.length - 1; i >= 0; i--) {
                 let e = entities[i];
-                ctx.font = '30px serif'; 
+                ctx.font = '30px serif';
                 ctx.fillText(e.type === 'rain' ? '💧' : '❤️', e.x, e.y);
 
-                if (e.type === 'rain') { 
-                    e.y += e.dy; 
-                    if (e.y > virtualHeight) { 
-                        entities.splice(i, 1); 
-                        continue; 
-                    } 
-                    
+                if (e.type === 'rain') {
+                    e.y += e.dy;
+                    if (e.y > canvas.height) {
+                        entities.splice(i, 1);
+                        continue;
+                    }
+
                     // Raindrop collision with avatar
                     if (Math.abs((player.x + 25) - e.x) < 35 && Math.abs((player.y + 25) - e.y) < 35) {
                         player.confidence -= 5;
@@ -542,25 +628,25 @@
 
                         if (player.confidence <= 0) {
                             initLevel(3); // Restart level if confidence hits 0
-                            break;
+                            return; // STOP processing this frame to avoid JS errors!
                         }
                         continue;
-                    } 
-                } else { 
-                    e.y -= 10; 
-                    if (e.y < 0) { 
-                        entities.splice(i, 1); 
-                        continue; 
-                    } 
-                    if (gameState.bossActive && e.y < 300 && Math.abs(e.x - virtualWidth/2) < 100) { 
-                        gameState.bossHealth -= 5; 
-                        entities.splice(i, 1); 
-                        if (gameState.bossHealth <= 0) {
-                            finishGame();
-                            break;
-                        } 
+                    }
+                } else {
+                    e.y -= 10;
+                    if (e.y < 0) {
+                        entities.splice(i, 1);
                         continue;
-                    } 
+                    }
+                    if (gameState.bossActive && e.y < 300 && Math.abs(e.x - canvas.width / 2) < 100) {
+                        gameState.bossHealth -= 5;
+                        entities.splice(i, 1);
+                        if (gameState.bossHealth <= 0) {
+                            gameState.bossActive = false;
+                            finishGame();
+                        }
+                        continue;
+                    }
                 }
             }
         }
@@ -570,7 +656,7 @@
             else if (gameState.keys['ArrowRight'] || gameState.keys['KeyD']) player.dx = 8; else player.dx *= 0.8;
             player.dy += 0.8; player.x += player.dx; player.y += player.dy;
             if (player.x < 0) player.x = 0; if (player.x > gameState.worldWidth - 50) player.x = gameState.worldWidth - 50;
-            
+
             player.grounded = false;
             platforms.forEach(p => {
                 if (player.dy >= 0 && player.x + 40 > p.x && player.x < p.x + p.w && player.y + 50 >= p.y && player.y + 50 <= p.y + player.dy + 15) {
@@ -580,33 +666,52 @@
                 }
             });
 
-            collectibles.forEach((c, i) => {
-                if (Math.sqrt((player.x+25-c.x)**2 + (player.y+25-c.y)**2) < 45) {
-                    if (c.type === 'memory') { showMemory(gameState.level - 1, c.idx); gameState.score++; }
+            for (let i = collectibles.length - 1; i >= 0; i--) {
+                const c = collectibles[i];
+                if (Math.sqrt((player.x + 25 - c.x) ** 2 + (player.y + 25 - c.y) ** 2) < 45) {
+                    if (c.type === 'memory') { 
+                        gameState.memories.push(clues[gameState.level - 1][c.idx]);
+                        showMemory(gameState.level - 1, c.idx); 
+                        gameState.score++; 
+                    }
                     else if (c.type === 'powerup') { gameState.canDoubleJump = true; document.getElementById('ability-hud').classList.remove('hidden'); }
                     else if (c.type === 'key') { gameState.hasKey++; updateHUD(); }
                     collectibles.splice(i, 1); updateHUD();
                 }
-            });
+            }
 
             if (gameState.bossActive && gameState.keys['Space']) { if (!player.lastS || Date.now() - player.lastS > 300) { entities.push({ x: player.x + 10, y: player.y, type: 'heart_shot' }); player.lastS = Date.now(); } }
-            let fL = (gameState.level === 2) ? gameState.worldHeight : virtualHeight;
+            let fL = (gameState.level === 2) ? gameState.worldHeight : canvas.height;
             if (player.y > fL + 300) initLevel(gameState.level);
 
             ctx.save(); ctx.shadowBlur = 30; ctx.shadowColor = THEME.pink; ctx.font = '50px serif'; ctx.textAlign = 'center'; ctx.fillText('❤️', player.x + 25, player.y + 40); ctx.restore();
-            player.trailTimer++; if (player.trailTimer % 5 === 0) gameState.particles.push(new Particle(player.x + 25, player.y + 25, THEME.pink, 3, (Math.random()-0.5)*2, (Math.random()-0.5)*2, 1));
+            player.trailTimer++; if (player.trailTimer % 5 === 0) gameState.particles.push(new Particle(player.x + 25, player.y + 25, THEME.pink, 3, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, 1));
         }
 
-        function updateParticles() { gameState.particles.forEach((p, i) => { p.update(); p.draw(); if (p.life <= 0) gameState.particles.splice(i, 1); }); }
+        function updateParticles() { 
+            for (let i = gameState.particles.length - 1; i >= 0; i--) {
+                const p = gameState.particles[i];
+                p.update(); 
+                p.draw(); 
+                if (p.life <= 0) gameState.particles.splice(i, 1); 
+            }
+        }
 
         function showMemory(lvl, idx) { gameState.active = false; document.getElementById('modal-text').innerText = clues[lvl][idx]; document.getElementById('modal-overlay').style.display = 'flex'; }
-        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; gameState.active = true; requestAnimationFrame(gameLoop); }
-        function nextLevel() { gameState.level++; if (gameState.level <= 3) initLevel(gameState.level); else finishGame(); }
+        function closeModal() { 
+            document.getElementById('modal-overlay').style.display = 'none'; 
+            gameState.active = true; 
+            if (!gameState.isLooping) {
+                gameState.isLooping = true;
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        function nextLevel() { if (gameState.level < 3) showLevelIntro(gameState.level + 1); else finishGame(); }
         function updateHUD() {
             document.getElementById('level-hud').innerText = `NIVEL ${gameState.level}`;
             let t = (gameState.level === 3) ? 'FIN' : 5; document.getElementById('score-hud').innerText = `RECUERDOS: ${gameState.score}/${t}`;
             let kH = document.getElementById('key-hud'); if (gameState.level === 2) { kH.classList.remove('hidden'); kH.innerText = `🔑 LLAVES: ${gameState.hasKey}/3`; } else kH.classList.add('hidden');
-            
+
             let cH = document.getElementById('confidence-hud');
             if (gameState.level === 3) {
                 cH.classList.remove('hidden');
@@ -614,140 +719,96 @@
             } else {
                 cH.classList.add('hidden');
             }
-
-            // Toggle touch shooting button in Level 3
-            let touchShoot = document.getElementById('touch-shoot');
-            if (touchShoot && isTouchDevice) {
-                if (gameState.level === 3) {
-                    touchShoot.classList.remove('hidden');
-                } else {
-                    touchShoot.classList.add('hidden');
-                }
-            }
         }
 
         function toggleLog() { alert("RECUERDOS ENCONTRADOS:\n\n" + gameState.memories.join("\n\n")); }
-        window.addEventListener('keydown', (e) => { 
-            gameState.keys[e.code] = true; 
-            if ((e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW')) { 
-                if (player.grounded) { player.dy = -16; player.grounded = false; } 
-                else if (gameState.canDoubleJump && !player.doubleJumped) { player.dy = -14; player.doubleJumped = true; } 
-            } 
+        window.addEventListener('keydown', (e) => {
+            gameState.keys[e.code] = true;
+            if ((e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW')) {
+                if (player.grounded) { player.dy = -16; player.grounded = false; }
+                else if (gameState.canDoubleJump && !player.doubleJumped) { player.dy = -14; player.doubleJumped = true; }
+            }
         });
         window.addEventListener('keyup', (e) => gameState.keys[e.code] = false);
 
-        // Touchscreen Controls Initialization
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        if (isTouchDevice) {
-            document.getElementById('mobile-controls').classList.remove('hidden');
-            initTouchControls();
-        }
-
-        function initTouchControls() {
-            const btnLeft = document.getElementById('touch-left');
-            const btnRight = document.getElementById('touch-right');
-            const btnJump = document.getElementById('touch-jump');
-            const btnShoot = document.getElementById('touch-shoot');
-
-            const bindTouch = (btn, keyName) => {
-                if (!btn) return;
-                btn.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    gameState.keys[keyName] = true;
-                    if (keyName === 'ArrowUp') {
-                        if (player.grounded) { 
-                            player.dy = -16; 
-                            player.grounded = false; 
-                        } else if (gameState.canDoubleJump && !player.doubleJumped) { 
-                            player.dy = -14; 
-                            player.doubleJumped = true; 
-                        } 
-                    }
-                }, { passive: false });
-
-                btn.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    gameState.keys[keyName] = false;
-                }, { passive: false });
-            };
-
-            bindTouch(btnLeft, 'ArrowLeft');
-            bindTouch(btnRight, 'ArrowRight');
-            bindTouch(btnJump, 'ArrowUp');
-            bindTouch(btnShoot, 'Space');
-        }
-
-        let yesScale = 1.0;
-        let noScale = 1.0;
-
-        function finishGame() { 
-            gameState.active = false; 
-            yesScale = 1.0;
-            noScale = 1.0;
-            let yesBtn = document.getElementById('yesBtn');
-            let noBtn = document.getElementById('noBtn');
-            if (yesBtn) yesBtn.style.transform = "scale(1)";
-            if (noBtn) { noBtn.style.transform = "scale(1)"; noBtn.style.display = "block"; }
-            
-            document.getElementById('proposal-screen').classList.remove('hidden'); 
-            typeWriter(); 
-        }
-
-        function typeWriter() { 
+        function finishGame() { gameState.active = false; document.getElementById('proposal-screen').classList.remove('hidden'); typeWriter(); }
+        function typeWriter() {
             const txt = "Has superado las pruebas, explorado rincones profundos y vencido las dudas. Ahora, en el centro de este universo, tengo una pregunta para ti...";
             let i = 0, target = document.getElementById("typing-text"); target.innerHTML = "";
             let question = document.getElementById("proposal-question");
-            let buttons = document.getElementById("proposal-buttons");
-            
             question.classList.add("hidden");
             question.style.opacity = 0;
-            buttons.classList.add("hidden");
-            buttons.style.opacity = 0;
-            
-            function type() { 
-                if (i < txt.length) { 
-                    target.innerHTML += txt.charAt(i); 
-                    i++; 
-                    setTimeout(type, 45); 
+
+            function type() {
+                if (i < txt.length) {
+                    target.innerHTML += txt.charAt(i);
+                    i++;
+                    setTimeout(type, 45);
                 } else {
                     // Show the proposal question with a gorgeous glowing fade-in and scale effect!
                     question.classList.remove("hidden");
                     question.style.transition = "opacity 1.8s ease, transform 1.8s ease";
                     question.style.transform = "scale(0.95)";
-                    setTimeout(() => { 
-                        question.style.opacity = 1; 
+                    setTimeout(() => {
+                        question.style.opacity = 1;
                         question.style.transform = "scale(1)";
+                        document.getElementById('yesBtn').classList.remove('hidden');
+                        document.getElementById('noBtn').classList.remove('hidden');
+                        resetNoButtonPosition();
                     }, 100);
-
-                    // Fade in the yes/no buttons alongside the question
-                    buttons.classList.remove("hidden");
-                    buttons.style.transition = "opacity 1.8s ease, transform 1.8s ease";
-                    buttons.style.transform = "scale(0.95)";
-                    setTimeout(() => { 
-                        buttons.style.opacity = 1; 
-                        buttons.style.transform = "scale(1)";
-                    }, 200);
-                } 
-            } 
+                }
+            }
             type();
         }
+        function moveNo() {
+            const b = document.getElementById('noBtn');
+            b.classList.remove('hidden');
+            
+            // Now that it's a direct child of body, window dimensions are absolute
+            const btnWidth = b.offsetWidth || 100;
+            const btnHeight = b.offsetHeight || 50;
+            const margin = 80; 
+            
+            const maxX = window.innerWidth - btnWidth - margin;
+            const maxY = window.innerHeight - btnHeight - margin;
+            
+            let newX = margin + Math.random() * (maxX - margin);
+            let newY = margin + Math.random() * (maxY - margin);
+            
+            newX = Math.min(Math.max(newX, margin), maxX);
+            newY = Math.min(Math.max(newY, margin), maxY);
+            
+            b.style.left = newX + 'px';
+            b.style.top = newY + 'px';
+        }
+function resetNoButtonPosition() {
+    moveNo(); // Reuse the same safe logic
+}
+        function acceptProposal() { confetti({ particleCount: 500, spread: 160, origin: { y: 0.6 } }); setTimeout(() => { alert("¡Sabía que nuestro destino estaba escrito en las estrellas! ❤️"); }, 500); }
 
-        function shrinkNo() {
-            yesScale += 0.25;
-            noScale -= 0.18;
-            
-            let yesBtn = document.getElementById('yesBtn');
-            let noBtn = document.getElementById('noBtn');
-            
-            if (noScale <= 0.15) {
-                noBtn.style.display = 'none';
-            } else {
-                noBtn.style.transform = `scale(${noScale})`;
-            }
-            yesBtn.style.transform = `scale(${yesScale})`;
+        // Touch handling
+        function initTouch() {
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            if (isTouch) document.getElementById('touch-controls').classList.remove('hidden');
+
+            const bindTouch = (id, key) => {
+                const el = document.getElementById(id);
+                el.addEventListener('touchstart', (e) => { e.preventDefault(); gameState.keys[key] = true; if (key === 'Space') handleJump(); });
+                el.addEventListener('touchend', (e) => { e.preventDefault(); gameState.keys[key] = false; });
+            };
+
+            bindTouch('ctrl-left', 'ArrowLeft');
+            bindTouch('ctrl-right', 'ArrowRight');
+            bindTouch('ctrl-jump', 'Space');
         }
 
-        function acceptProposal() { confetti({ particleCount: 500, spread: 160, origin: { y: 0.6 } }); setTimeout(() => { alert("¡Sabía que nuestro destino estaba escrito en las estrellas! ❤️"); }, 500); }
+        function handleJump() {
+            if (player.grounded) { player.dy = -16; player.grounded = false; }
+            else if (gameState.canDoubleJump && !player.doubleJumped) { player.dy = -14; player.doubleJumped = true; }
+        }
+
+        initTouch();
     </script>
 </body>
+
 </html>
