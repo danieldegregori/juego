@@ -142,7 +142,7 @@
         }
 
         #noBtn {
-            position: absolute;
+            position: relative;
             background: #333;
             color: white;
             padding: 10px 25px;
@@ -210,6 +210,19 @@
 
         @media (orientation: portrait) {
             #orientation-warning { display: flex; }
+        }
+
+        /* Mobile scaling for HUD and Controls */
+        @media (max-width: 900px) {
+            #hud { top: 15px; left: 15px; gap: 6px; }
+            .hud-item { padding: 6px 15px; font-size: 0.8rem; }
+            
+            #touch-controls { bottom: 25px; padding: 0 25px; }
+            .side-controls { gap: 15px; }
+            .touch-btn { width: 65px; height: 65px; font-size: 24px; }
+            
+            #music-toggle-btn { bottom: 20px; left: 20px; width: 45px; height: 45px; font-size: 1.2rem; }
+            #memory-log-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; font-size: 1.2rem; }
         }
 
         #level-intro-screen {
@@ -299,8 +312,9 @@
             <h2 id="proposal-question" class="hidden"
                 style="font-family: 'Pacifico', cursive; font-size: 2.3rem; color: var(--neon-pink); text-shadow: 0 0 15px var(--neon-pink); margin-top: 1rem; margin-bottom: 2rem;">
                 ¿Quieres empezar a escribir una historia juntos?</h2>
-            <div style="margin-top: 2rem; position: relative; height: 80px;">
+            <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 20px; align-items: center; min-height: 80px;">
                 <button id="yesBtn" class="btn hidden" onclick="acceptProposal()">SÍ, QUIERO ❤️</button>
+                <button id="noBtn" class="btn hidden" onmouseover="moveNo()">No</button>
             </div>
         </div>
         <div id="level-intro-screen" class="hidden">
@@ -311,9 +325,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Move No button here to avoid containing block issues from glass-panel filters -->
-    <button id="noBtn" class="btn hidden" onmouseover="moveNo()" style="position: fixed; z-index: 9999;">No</button>
 
     <div id="modal-overlay">
         <div class="modal-card"><span id="modal-icon" style="font-size: 4rem;">📖</span>
@@ -549,8 +560,8 @@
             ctx.fillStyle = '#050515'; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white'; gameState.parallax.forEach(s => { ctx.fillRect(s.x, s.y, s.s, s.s); s.x -= s.sp; if (s.x < 0) s.x = canvas.width; });
 
-            // Zoom out factor to see more area
-            const zoom = 0.8;
+            // Computer: 1.0 zoom. Mobile (< 900px): 0.7 zoom.
+            const zoom = (window.innerWidth < 900) ? 0.7 : 1.0;
             let targetCamX = player.x - (canvas.width / zoom) / 2;
             let targetCamY = player.y - (canvas.height / zoom) / 2;
 
@@ -800,9 +811,16 @@
         }
         function moveNo() {
             const b = document.getElementById('noBtn');
-            b.classList.remove('hidden');
             
-            // Now that it's a direct child of body, window dimensions are absolute
+            // On first move, teleport to body to escape parent filters/centering
+            if (b.parentElement.id !== 'body-node') {
+                b.style.position = 'fixed';
+                b.style.zIndex = '9999';
+                document.body.appendChild(b);
+                b.id = 'noBtn'; // redundant but safe
+            }
+
+            b.classList.remove('hidden');
             const btnWidth = b.offsetWidth || 100;
             const btnHeight = b.offsetHeight || 50;
             const margin = 80; 
@@ -819,9 +837,9 @@
             b.style.left = newX + 'px';
             b.style.top = newY + 'px';
         }
-function resetNoButtonPosition() {
-    moveNo(); // Reuse the same safe logic
-}
+        function resetNoButtonPosition() {
+            // Do nothing initially, let it stay in its HTML position next to YES
+        }
         function acceptProposal() { confetti({ particleCount: 500, spread: 160, origin: { y: 0.6 } }); setTimeout(() => { alert("¡Sabía que nuestro destino estaba escrito en las estrellas! ❤️"); }, 500); }
 
         // Touch handling
