@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Una Gran Aventura de Amor</title>
+    <title>Una Gran Aventura</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Pacifico&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -102,11 +102,12 @@
 
         #memory-log-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 150;
-            width: 60px;
-            height: 60px;
+            top: 20px;
+            right: 20px;
+            bottom: auto;
+            z-index: 160;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             background: var(--neon-gold);
             color: white;
@@ -116,6 +117,8 @@
             cursor: pointer;
             pointer-events: auto;
             border: none;
+            font-size: 1.4rem;
+            box-shadow: 0 0 15px rgba(248, 181, 0, 0.4);
         }
 
         #modal-overlay {
@@ -153,50 +156,49 @@
 
         canvas {
             display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
         }
 
         .hidden {
             display: none !important;
         }
 
-        #touch-controls {
+        /* ── Controles split: pantalla dividida (todos los niveles) ── */
+        #touch-split {
             position: fixed;
-            bottom: 50px;
+            top: 0;
             left: 0;
             width: 100%;
-            padding: 0 50px;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            z-index: 1000;
+            height: 100%;
+            z-index: 900;
             pointer-events: none;
-        }
-        .side-controls {
             display: flex;
-            gap: 30px;
+        }
+
+        #split-left {
+            width: 50%;
+            height: 100%;
+            pointer-events: auto;
+            /* sin fondo visible — zona invisible */
+        }
+
+        #split-right {
+            width: 50%;
+            height: 100%;
             pointer-events: auto;
         }
-        .touch-btn {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 32px;
-            user-select: none;
-            -webkit-user-select: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .touch-btn:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.9); }
 
         #orientation-warning {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: #050515;
             color: white;
             display: none;
@@ -208,21 +210,60 @@
             font-family: 'Outfit', sans-serif;
         }
 
-        @media (orientation: portrait) {
-            #orientation-warning { display: flex; }
-        }
+        /* orientation-warning se controla 100% desde JS en checkOrientation() */
 
         /* Mobile scaling for HUD and Controls */
         @media (max-width: 900px) {
-            #hud { top: 15px; left: 15px; gap: 6px; }
-            .hud-item { padding: 6px 15px; font-size: 0.8rem; }
-            
-            #touch-controls { bottom: 25px; padding: 0 25px; }
-            .side-controls { gap: 15px; }
-            .touch-btn { width: 65px; height: 65px; font-size: 24px; }
-            
-            #music-toggle-btn { bottom: 20px; left: 20px; width: 45px; height: 45px; font-size: 1.2rem; }
-            #memory-log-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; font-size: 1.2rem; }
+            #hud {
+                top: 8px;
+                left: 8px;
+                gap: 4px;
+                transform: scale(0.6);
+                transform-origin: top left;
+                flex-direction: row;
+                flex-wrap: wrap;
+                width: 90%;
+            }
+
+            .hud-item {
+                padding: 4px 10px;
+                font-size: 1rem;
+                background: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(4px);
+            }
+
+            #music-toggle-btn {
+                bottom: 10px;
+                left: 10px;
+                transform: scale(0.7);
+                transform-origin: bottom left;
+            }
+
+            #memory-log-btn {
+                top: 10px;
+                right: 10px;
+                bottom: auto;
+                transform: scale(0.7);
+                transform-origin: top right;
+            }
+
+            .glass-panel {
+                padding: 1.2rem;
+                width: 94%;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            h2#proposal-question {
+                font-size: 1.3rem !important;
+            }
+
+            #typing-text {
+                font-size: 0.8rem;
+            }
         }
 
         #level-intro-screen {
@@ -276,20 +317,57 @@
         <div class="hud-item hidden" id="confidence-hud">❤️ CONFIANZA: 100%</div>
     </div>
 
-    <div id="touch-controls" class="hidden">
-        <div class="side-controls">
-            <div class="touch-btn" id="ctrl-left">⬅️</div>
-            <div class="touch-btn" id="ctrl-right">➡️</div>
-        </div>
-        <div class="side-controls">
-            <div class="touch-btn" id="ctrl-jump">⬆️</div>
-        </div>
+    <!-- Botones clásicos: ocultos permanentemente, reemplazados por split-screen -->
+    <div id="touch-controls" class="hidden"></div>
+
+    <!-- Controles split: activos para todos los niveles -->
+    <div id="touch-split" class="hidden">
+        <div id="split-left"></div>
+        <div id="split-right"></div>
     </div>
 
     <div id="orientation-warning">
         <div style="font-size: 4rem; margin-bottom: 1rem;">📱🔄</div>
         <h2>MODO HORIZONTAL REQUERIDO</h2>
         <p>Por favor, gira tu dispositivo para poder jugar esta gran aventura.</p>
+    </div>
+
+    <!-- Nivel 3: pide rotar a vertical -->
+    <div id="vertical-warning" style="
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: #050515;
+        color: white;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9998;
+        text-align: center;
+        font-family: 'Outfit', sans-serif;
+        padding: 2rem;
+        box-sizing: border-box;
+    ">
+        <div style="font-size: 4rem; margin-bottom: 1rem; animation: spin 1.5s ease-in-out infinite alternate;">📱</div>
+        <h2
+            style="font-family: 'Pacifico', cursive; font-size: 1.8rem; background: linear-gradient(to right, #ff007f, #00f2ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
+            ¡El Desafío Final!
+        </h2>
+        <p style="font-size: 1rem; color: rgba(255,255,255,0.8); max-width: 280px; line-height: 1.6;">
+            Este nivel se juega en modo <strong>vertical</strong>.<br>Gira tu dispositivo para enfrentar las Dudas y
+            Temores. 🌧️
+        </p>
+        <style>
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(90deg);
+                }
+            }
+        </style>
     </div>
 
     <button id="memory-log-btn" class="hidden" onclick="toggleLog()">📖</button>
@@ -312,7 +390,8 @@
             <h2 id="proposal-question" class="hidden"
                 style="font-family: 'Pacifico', cursive; font-size: 2.3rem; color: var(--neon-pink); text-shadow: 0 0 15px var(--neon-pink); margin-top: 1rem; margin-bottom: 2rem;">
                 ¿Quieres empezar a escribir una historia juntos?</h2>
-            <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 20px; align-items: center; min-height: 80px;">
+            <div
+                style="margin-top: 2rem; display: flex; justify-content: center; gap: 20px; align-items: center; min-height: 80px;">
                 <button id="yesBtn" class="btn hidden" onclick="acceptProposal()">SÍ, QUIERO ❤️</button>
                 <button id="noBtn" class="btn hidden" onmouseover="moveNo()">No</button>
             </div>
@@ -331,540 +410,9 @@
             <p id="modal-text"></p><button class="btn" onclick="closeModal()">Continuar</button>
         </div>
     </div>
+
     <canvas id="gameCanvas"></canvas>
-
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let gameState = { level: 0, score: 0, active: false, isLooping: false, cameraX: 0, cameraY: 0, hasKey: 0, canDoubleJump: false, memories: [], particles: [], parallax: [], worldWidth: 3000, worldHeight: 1200, bossHealth: 100, bossActive: false, keys: {} };
-        const THEME = { pink: '#ff007f', blue: '#00f2ff', gold: '#f8b500' };
-
-        class Particle {
-            constructor(x, y, color, size, sx, sy, life) { this.x = x; this.y = y; this.color = color; this.size = size; this.sx = sx; this.sy = sy; this.life = life; this.maxLife = life; }
-            update() { this.x += this.sx; this.y += this.sy; this.life -= 0.02; }
-            draw() { ctx.save(); ctx.globalAlpha = this.life / this.maxLife; ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-        }
-
-        let player = { x: 100, y: 0, w: 50, h: 50, dy: 0, dx: 0, grounded: false, doubleJumped: false, trailTimer: 0, confidence: 100 };
-        let platforms = [], collectibles = [], entities = [], obstacles = [];
-        const levelIntros = [
-            { title: "Nivel 1: El Inicio de Todo", desc: "Donde todo comenzó. Recolecta los 5 recuerdos de nuestros primeros días para abrir el camino hacia adelante." },
-            { title: "Nivel 2: Creciendo Juntos", desc: "El camino se vuelve más difícil. Encuentra las 3 llaves doradas y usa el poder del doble salto para cruzar el gran vacío." },
-            { title: "Nivel 3: El Desafío Final", desc: "Las dudas intentarán detenerte, pero nuestro amor es más fuerte. Usa tus disparos de corazón para vencer los temores finales." }
-        ];
-        const clues = [
-            ["Aquel primer mes fue el inicio de todo.", "Tu mirada iluminó mi oscuridad.", "Nuestras risas son mi motor diario.", "Eres mi lugar seguro.", "Esta aventura apenas comienza."],
-            ["El camino es largo, pero vale la pena.", "Cada salto nos acerca más.", "He guardado cada detalle tuyo aquí.", "La llave del corazón está cerca.", "Juntos podemos con todo."],
-            ["El final está a la vista.", "No tengas miedo de las dudas.", "Lo que siento es más fuerte que el jefe final.", "Eres mi victoria más grande.", "¡Prepárate para la gran pregunta!"]
-        ];
-
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initStars(); }
-        window.addEventListener('resize', resize); resize();
-        function initStars() { gameState.parallax = []; for (let i = 0; i < 300; i++) gameState.parallax.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2, sp: 0.1 + Math.random() * 0.2 }); }
-
-        function startGame() {
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('hud').classList.remove('hidden');
-            document.getElementById('memory-log-btn').classList.remove('hidden');
-            document.getElementById('music-toggle-btn').classList.remove('hidden');
-            
-            const music = document.getElementById('bg-music');
-            music.volume = 0.5;
-            music.play().catch(e => console.log("Interacción requerida para audio"));
-            
-            showLevelIntro(1);
-        }
-
-        function showLevelIntro(num) {
-            gameState.active = false;
-            gameState.level = num;
-            const intro = levelIntros[num - 1];
-            document.getElementById('intro-level-title').innerText = intro.title;
-            document.getElementById('intro-level-desc').innerText = intro.desc;
-            document.getElementById('level-intro-screen').classList.remove('hidden');
-        }
-
-        function startLevelAfterIntro() {
-            document.getElementById('level-intro-screen').classList.add('hidden');
-            initLevel(gameState.level);
-            gameState.active = true;
-            if (!gameState.isLooping) {
-                gameState.isLooping = true;
-                requestAnimationFrame(gameLoop);
-            }
-        }
-
-        function toggleMusic() {
-            const music = document.getElementById('bg-music');
-            const btn = document.getElementById('music-toggle-btn');
-            if (music.paused) {
-                music.play();
-                btn.innerText = '🔊';
-            } else {
-                music.pause();
-                btn.innerText = '🔇';
-            }
-        }
-
-        function initLevel(num) {
-            player.x = 100; player.y = canvas.height - 300; player.dy = 0; player.dx = 0; player.grounded = false; player.confidence = 100;
-            platforms = []; collectibles = []; entities = []; obstacles = [];
-            gameState.score = 0; gameState.hasKey = 0; updateHUD();
-
-            if (num === 1) {
-                gameState.worldWidth = 8000;
-                platforms.push({ x: 0, y: canvas.height - 100, w: 8000, h: 100, type: 'ground' });
-                for (let i = 0; i < 5; i++) collectibles.push({ x: 1500 + i * 1300 + Math.random() * 200, y: canvas.height - 180 - Math.random() * 50, type: 'memory', idx: i });
-                let lastObsX = 0;
-                for (let x = 800; x < 7000; x += 200) {
-                    let nearMem = collectibles.some(m => Math.abs(m.x - x) < 150);
-                    if (nearMem) continue;
-                    if (Math.random() < 0.25 && (x - lastObsX > 600)) { obstacles.push({ x: x, y: canvas.height - 140, w: 40, h: 40 }); lastObsX = x; }
-                    else if (Math.random() < 0.6) collectibles.push({ x: x, y: canvas.height - 150 - Math.random() * 120, type: 'sparkle', idx: -1 });
-                }
-            } else if (num === 2) {
-                gameState.worldWidth = 5000; gameState.worldHeight = 3000;
-                player.x = 100; player.y = 2800;
-                platforms.push({ x: 0, y: 2900, w: 1200, h: 100 }); // Ground
-
-                let zone1Plats = [];
-                let zone2Plats = [];
-
-                // --- ZONE 1: THE FLOATING GARDENS (y: 2900 to 1500) ---
-                // Single jump only. Highly varied shapes, terraces, and vertical zigzags.
-
-                // Tier 1 (y: 2750)
-                zone1Plats.push({ x: 300, y: 2750, w: 250, h: 20 });
-                zone1Plats.push({ x: 650, y: 2750, w: 200, h: 20 }); // A stepping stone
-
-                // Tier 2 (y: 2600) - A nice long terrace
-                zone1Plats.push({ x: 800, y: 2600, w: 400, h: 20 });
-                zone1Plats.push({ x: 450, y: 2600, w: 200, h: 20 });
-
-                // Tier 3 (y: 2440) - Zigzag back to the left
-                zone1Plats.push({ x: 150, y: 2440, w: 220, h: 20 });
-                zone1Plats.push({ x: 480, y: 2440, w: 180, h: 20 });
-
-                // Tier 4 (y: 2280) - Broad resting platform
-                zone1Plats.push({ x: 300, y: 2280, w: 450, h: 20 });
-                zone1Plats.push({ x: 850, y: 2280, w: 300, h: 20 });
-
-                // Tier 5 (y: 2120) - Vertical narrow step challenge
-                zone1Plats.push({ x: 1200, y: 2120, w: 200, h: 20 });
-                zone1Plats.push({ x: 950, y: 1980, w: 220, h: 20 });
-                zone1Plats.push({ x: 650, y: 1840, w: 250, h: 20 });
-
-                // Tier 6 (y: 1700) - Long jump path to the right
-                zone1Plats.push({ x: 300, y: 1700, w: 200, h: 20 });
-                zone1Plats.push({ x: 600, y: 1700, w: 300, h: 20 });
-                zone1Plats.push({ x: 1000, y: 1700, w: 200, h: 20 });
-
-                // Tier 7 (y: 1550) - Altar leading to the Powerup Altar
-                zone1Plats.push({ x: 1300, y: 1550, w: 250, h: 20 });
-
-                // The Powerup Altar (y: 1450) - Safe resting zone
-                let powerupAltar = { x: 1600, y: 1450, w: 400, h: 20 };
-                zone1Plats.push(powerupAltar);
-
-                // Add all Zone 1 platforms to global platforms
-                zone1Plats.forEach(p => platforms.push(p));
-
-
-                // --- ZONE 2: THE SKY CHASM (y: 1400 to 100) ---
-                // Double jump required. Massive dynamic jumps with safety nets below!
-
-                // Tier 1 (y: 1280) - Large jump to the right with a safety net
-                zone2Plats.push({ x: 2100, y: 1280, w: 220, h: 20 }); // Main
-                platforms.push({ x: 2000, y: 1480, w: 450, h: 20, type: 'safety_net' }); // Safety Net
-
-                // Tier 2 (y: 1100) - Stepping stones leading up and left
-                zone2Plats.push({ x: 1800, y: 1100, w: 180, h: 20 }); // Main
-                platforms.push({ x: 1700, y: 1300, w: 350, h: 20, type: 'safety_net' }); // Safety Net
-
-                // Tier 3 (y: 930) - Challenge platform
-                zone2Plats.push({ x: 1450, y: 930, w: 200, h: 20 }); // Main
-                platforms.push({ x: 1350, y: 1150, w: 400, h: 20, type: 'safety_net' }); // Safety Net
-
-                // Tier 4 (y: 780) - Big crossing to the right
-                zone2Plats.push({ x: 1850, y: 780, w: 300, h: 20 }); // Main
-                zone2Plats.push({ x: 2300, y: 780, w: 220, h: 20 }); // Main
-                platforms.push({ x: 1750, y: 980, w: 850, h: 20, type: 'safety_net' }); // Giant Safety Net!
-
-                // Tier 5 (y: 600) - Winding sky path
-                zone2Plats.push({ x: 2700, y: 600, w: 250, h: 20 });
-                zone2Plats.push({ x: 3100, y: 600, w: 300, h: 20 });
-
-                // Tier 6 (y: 430) - Pre-Gate approach sequence
-                zone2Plats.push({ x: 3500, y: 430, w: 220, h: 20 });
-                zone2Plats.push({ x: 3850, y: 300, w: 250, h: 20 });
-
-                // Tier 7 (y: 180) - Final approach stairs leading directly into the gate
-                zone2Plats.push({ x: 4150, y: 180, w: 200, h: 20 });
-
-                // Add all Zone 2 platforms to global platforms
-                zone2Plats.forEach(p => platforms.push(p));
-
-                // --- THE GOAL / META GATE ---
-                // Perfectly placed at x: 4400, y: 100, with a width of 600
-                // Extremely reachable from the Tier 7 final step (x: 4150, y: 180)
-                let gatePlatform = { x: 4400, y: 100, w: 600, h: 20, type: 'gate' };
-                platforms.push(gatePlatform);
-
-
-                // --- ITEMS DISTRIBUTION ---
-                // Powerup is ALWAYS at the Powerup Altar (Zone 1)
-                collectibles.push({ x: powerupAltar.x + powerupAltar.w / 2, y: powerupAltar.y - 50, type: 'powerup' });
-
-                // 3 Keys distributed in Zone 2 main platforms
-                collectibles.push({ x: zone2Plats[1].x + zone2Plats[1].w / 2, y: zone2Plats[1].y - 50, type: 'key' }); // Tier 2
-                collectibles.push({ x: zone2Plats[4].x + zone2Plats[4].w / 2, y: zone2Plats[4].y - 50, type: 'key' }); // Tier 4 (second)
-                collectibles.push({ x: zone2Plats[7].x + zone2Plats[7].w / 2, y: zone2Plats[7].y - 50, type: 'key' }); // Tier 6
-
-                // 5 Memories distributed beautifully:
-                // 2 in Zone 1:
-                collectibles.push({ x: zone1Plats[6].x + zone1Plats[6].w / 2, y: zone1Plats[6].y - 50, type: 'memory', idx: 0 }); // Tier 4 (resting)
-                collectibles.push({ x: zone1Plats[9].x + zone1Plats[9].w / 2, y: zone1Plats[9].y - 50, type: 'memory', idx: 1 }); // Tier 5 (secondary)
-
-                // 3 in Zone 2:
-                collectibles.push({ x: zone2Plats[0].x + zone2Plats[0].w / 2, y: zone2Plats[0].y - 50, type: 'memory', idx: 2 }); // Tier 1
-                collectibles.push({ x: zone2Plats[3].x + zone2Plats[3].w / 2, y: zone2Plats[3].y - 50, type: 'memory', idx: 3 }); // Tier 4 (first)
-                collectibles.push({ x: zone2Plats[8].x + zone2Plats[8].w / 2, y: zone2Plats[8].y - 50, type: 'memory', idx: 4 }); // Tier 6 (second)
-
-            } else if (num === 3) {
-                gameState.worldWidth = canvas.width; gameState.worldHeight = canvas.height;
-                gameState.bossActive = true; gameState.bossHealth = 100;
-                platforms.push({ x: 0, y: canvas.height - 100, w: canvas.width, h: 100 });
-                // Reset player and game state for level 3 restart
-                player.x = 100;
-                player.y = canvas.height - 300;
-                player.dx = 0; player.dy = 0;
-                player.confidence = 100;
-                player.grounded = false;
-                player.doubleJumped = false;
-                entities = [];
-                gameState.active = true;
-                // Ensure game loop is running
-                if (!gameState.isLooping) {
-                    gameState.isLooping = true;
-                    requestAnimationFrame(gameLoop);
-                }
-            }
-        }
-
-        function gameLoop() {
-            if (!gameState.active) {
-                gameState.isLooping = false;
-                return;
-            }
-            gameState.isLooping = true;
-            ctx.fillStyle = '#050515'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white'; gameState.parallax.forEach(s => { ctx.fillRect(s.x, s.y, s.s, s.s); s.x -= s.sp; if (s.x < 0) s.x = canvas.width; });
-
-            // Computer: 1.0 zoom. Mobile (< 900px): 0.7 zoom.
-            const zoom = (window.innerWidth < 900) ? 0.7 : 1.0;
-            let targetCamX = player.x - (canvas.width / zoom) / 2;
-            let targetCamY = player.y - (canvas.height / zoom) / 2;
-
-            if (gameState.level === 1) {
-                targetCamX = player.x - (canvas.width / zoom) * 0.25;
-            } else if (gameState.level === 2) {
-                targetCamY = player.y - (canvas.height / zoom) * 0.66;
-            }
-
-            gameState.cameraX += (targetCamX - gameState.cameraX) * 0.1;
-            gameState.cameraY += (targetCamY - gameState.cameraY) * 0.1;
-
-            gameState.cameraX = Math.max(0, Math.min(gameState.cameraX, gameState.worldWidth - canvas.width / zoom));
-            gameState.cameraY = (gameState.level === 2) ? Math.max(0, Math.min(gameState.cameraY, gameState.worldHeight - canvas.height / zoom)) : 0;
-
-            ctx.save(); 
-            ctx.scale(zoom, zoom);
-            ctx.translate(-gameState.cameraX, -gameState.cameraY);
-            drawLevel(); updatePlayer(); updateParticles(); ctx.restore();
-            requestAnimationFrame(gameLoop);
-        }
-
-        function drawLevel() {
-            platforms.forEach(p => {
-                ctx.save(); ctx.shadowBlur = 15;
-                ctx.shadowColor = p.type === 'gate' ? THEME.gold : (p.type === 'safety_net' ? THEME.pink : THEME.blue);
-                ctx.fillStyle = p.type === 'gate' ? (gameState.hasKey >= 3 ? 'rgba(248,181,0,0.8)' : 'rgba(100,100,100,0.5)') : (p.type === 'safety_net' ? 'rgba(255, 0, 127, 0.45)' : 'rgba(0,242,255,0.4)');
-                ctx.fillRect(p.x, p.y, p.w, p.h);
-                if (p.type === 'gate') { ctx.fillStyle = 'white'; ctx.font = '20px sans-serif'; ctx.fillText(gameState.hasKey >= 3 ? 'PUERTA ABIERTA' : `NECESITAS 3 LLAVES (TIENES ${gameState.hasKey}/3) 🔑`, p.x + 10, p.y - 10); }
-                else if (p.type === 'safety_net') { ctx.fillStyle = 'white'; ctx.font = '11px sans-serif'; ctx.fillText('✨ RED DE SEGURIDAD ✨', p.x + 10, p.y + 14); }
-                ctx.restore();
-            });
-
-            if (gameState.level === 1) {
-                const gY = canvas.height - 100;
-                ctx.save(); ctx.shadowBlur = 20; ctx.shadowColor = THEME.blue; ctx.strokeStyle = THEME.blue; ctx.lineWidth = 6;
-                ctx.beginPath(); ctx.moveTo(0, gY); ctx.lineTo(gameState.worldWidth, gY); ctx.stroke(); ctx.restore();
-                ctx.save(); ctx.shadowBlur = 40; ctx.shadowColor = THEME.gold; ctx.fillStyle = THEME.gold; ctx.fillRect(gameState.worldWidth - 300, gY - 400, 150, 400); ctx.restore();
-                if (player.x > gameState.worldWidth - 500) {
-                    if (gameState.score < 5) { ctx.fillStyle = 'white'; ctx.font = '20px Outfit'; ctx.textAlign = 'center'; ctx.fillText('¡Faltan momentos por recordar!', player.x, player.y - 50); }
-                    else if (player.x > gameState.worldWidth - 300) nextLevel();
-                }
-                obstacles.forEach(o => { ctx.font = '40px serif'; ctx.fillText('🌑', o.x, o.y + 35); if (Math.abs(player.x - o.x) < 40 && Math.abs(player.y - o.y) < 40) initLevel(1); });
-            }
-
-            collectibles.forEach(c => {
-                ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = c.type === 'memory' ? THEME.gold : (c.type === 'key' ? THEME.gold : THEME.blue);
-                ctx.font = '40px serif'; let icon = '✨'; if (c.type === 'powerup') icon = '⚡'; if (c.type === 'key') icon = '🔑'; if (c.type === 'sparkle') icon = '⭐';
-                ctx.fillText(icon, c.x, c.y); ctx.restore();
-            });
-
-            if (gameState.bossActive) {
-                // Boss Name & Health Bar (Dudas y Temores)
-                ctx.save();
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 20px Outfit';
-                ctx.textAlign = 'center';
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = THEME.pink;
-                ctx.fillText('Dudas y Temores ☁️', canvas.width / 2, 40);
-
-                // Background Health Bar
-                ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
-                ctx.fillRect(canvas.width / 2 - 150, 55, 300, 16);
-
-                // Foreground Health Bar
-                ctx.fillStyle = THEME.pink;
-                ctx.shadowColor = THEME.pink;
-                ctx.fillRect(canvas.width / 2 - 150, 55, gameState.bossHealth * 3, 16);
-                ctx.restore();
-
-                // Draw Cloud Emoji centered
-                ctx.font = '150px serif';
-                ctx.fillText('☁️', canvas.width / 2 - 75, 200);
-
-                // Raindrops fall directly from the cloud
-                if (Math.random() > 0.90) {
-                    entities.push({
-                        x: canvas.width / 2 - 80 + Math.random() * 160,
-                        y: 180,
-                        dy: 4 + Math.random() * 3,
-                        type: 'rain'
-                    });
-                }
-            }
-
-            // High-performance entity loop (backwards to prevent array splicing issues)
-            for (let i = entities.length - 1; i >= 0; i--) {
-                let e = entities[i];
-                ctx.font = '30px serif';
-                ctx.fillText(e.type === 'rain' ? '💧' : '❤️', e.x, e.y);
-
-                if (e.type === 'rain') {
-                    e.y += e.dy;
-                    if (e.y > canvas.height) {
-                        entities.splice(i, 1);
-                        continue;
-                    }
-
-                    // Raindrop collision with avatar
-                    if (Math.abs((player.x + 25) - e.x) < 35 && Math.abs((player.y + 25) - e.y) < 35) {
-                        player.confidence -= 5;
-                        player.dy = Math.max(player.dy + 6, 8); // Push player down (makes them fall)
-                        if (player.confidence < 0) player.confidence = 0;
-                        updateHUD();
-
-                        // Sparkle/Splash particles
-                        for (let k = 0; k < 6; k++) {
-                            gameState.particles.push(new Particle(e.x, e.y, '#00f2ff', 2, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4, 0.7));
-                        }
-
-                        entities.splice(i, 1); // Remove raindrop on collision
-
-                        if (player.confidence <= 0) {
-                            initLevel(3); // Restart level if confidence hits 0
-                            return; // STOP processing this frame to avoid JS errors!
-                        }
-                        continue;
-                    }
-                } else {
-                    e.y -= 10;
-                    if (e.y < 0) {
-                        entities.splice(i, 1);
-                        continue;
-                    }
-                    if (gameState.bossActive && e.y < 300 && Math.abs(e.x - canvas.width / 2) < 100) {
-                        gameState.bossHealth -= 5;
-                        entities.splice(i, 1);
-                        if (gameState.bossHealth <= 0) {
-                            gameState.bossActive = false;
-                            finishGame();
-                        }
-                        continue;
-                    }
-                }
-            }
-        }
-
-        function updatePlayer() {
-            if (gameState.keys['ArrowLeft'] || gameState.keys['KeyA']) player.dx = -8;
-            else if (gameState.keys['ArrowRight'] || gameState.keys['KeyD']) player.dx = 8; else player.dx *= 0.8;
-            player.dy += 0.8; player.x += player.dx; player.y += player.dy;
-            if (player.x < 0) player.x = 0; if (player.x > gameState.worldWidth - 50) player.x = gameState.worldWidth - 50;
-
-            player.grounded = false;
-            platforms.forEach(p => {
-                if (player.dy >= 0 && player.x + 40 > p.x && player.x < p.x + p.w && player.y + 50 >= p.y && player.y + 50 <= p.y + player.dy + 15) {
-                    if (p.type === 'gate' && gameState.hasKey < 3) player.dy = -10;
-                    else if (p.type === 'gate' && gameState.hasKey >= 3) nextLevel();
-                    else { player.y = p.y - 50; player.dy = 0; player.grounded = true; player.doubleJumped = false; }
-                }
-            });
-
-            for (let i = collectibles.length - 1; i >= 0; i--) {
-                const c = collectibles[i];
-                if (Math.sqrt((player.x + 25 - c.x) ** 2 + (player.y + 25 - c.y) ** 2) < 45) {
-                    if (c.type === 'memory') { 
-                        gameState.memories.push(clues[gameState.level - 1][c.idx]);
-                        showMemory(gameState.level - 1, c.idx); 
-                        gameState.score++; 
-                    }
-                    else if (c.type === 'powerup') { gameState.canDoubleJump = true; document.getElementById('ability-hud').classList.remove('hidden'); }
-                    else if (c.type === 'key') { gameState.hasKey++; updateHUD(); }
-                    collectibles.splice(i, 1); updateHUD();
-                }
-            }
-
-            if (gameState.bossActive && gameState.keys['Space']) { if (!player.lastS || Date.now() - player.lastS > 300) { entities.push({ x: player.x + 10, y: player.y, type: 'heart_shot' }); player.lastS = Date.now(); } }
-            let fL = (gameState.level === 2) ? gameState.worldHeight : canvas.height;
-            if (player.y > fL + 300) initLevel(gameState.level);
-
-            ctx.save(); ctx.shadowBlur = 30; ctx.shadowColor = THEME.pink; ctx.font = '50px serif'; ctx.textAlign = 'center'; ctx.fillText('❤️', player.x + 25, player.y + 40); ctx.restore();
-            player.trailTimer++; if (player.trailTimer % 5 === 0) gameState.particles.push(new Particle(player.x + 25, player.y + 25, THEME.pink, 3, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, 1));
-        }
-
-        function updateParticles() { 
-            for (let i = gameState.particles.length - 1; i >= 0; i--) {
-                const p = gameState.particles[i];
-                p.update(); 
-                p.draw(); 
-                if (p.life <= 0) gameState.particles.splice(i, 1); 
-            }
-        }
-
-        function showMemory(lvl, idx) { gameState.active = false; document.getElementById('modal-text').innerText = clues[lvl][idx]; document.getElementById('modal-overlay').style.display = 'flex'; }
-        function closeModal() { 
-            document.getElementById('modal-overlay').style.display = 'none'; 
-            gameState.active = true; 
-            if (!gameState.isLooping) {
-                gameState.isLooping = true;
-                requestAnimationFrame(gameLoop);
-            }
-        }
-        function nextLevel() { if (gameState.level < 3) showLevelIntro(gameState.level + 1); else finishGame(); }
-        function updateHUD() {
-            document.getElementById('level-hud').innerText = `NIVEL ${gameState.level}`;
-            let t = (gameState.level === 3) ? 'FIN' : 5; document.getElementById('score-hud').innerText = `RECUERDOS: ${gameState.score}/${t}`;
-            let kH = document.getElementById('key-hud'); if (gameState.level === 2) { kH.classList.remove('hidden'); kH.innerText = `🔑 LLAVES: ${gameState.hasKey}/3`; } else kH.classList.add('hidden');
-
-            let cH = document.getElementById('confidence-hud');
-            if (gameState.level === 3) {
-                cH.classList.remove('hidden');
-                cH.innerHTML = `❤️ CONFIANZA: ${player.confidence}% <div style="display:inline-block; width:100px; height:10px; background:#222; border-radius:5px; border:1px solid rgba(255,255,255,0.2); margin-left:10px; vertical-align:middle; overflow:hidden;"><div style="width:${player.confidence}%; height:100%; background:var(--neon-pink); box-shadow: 0 0 8px var(--neon-pink);"></div></div>`;
-            } else {
-                cH.classList.add('hidden');
-            }
-        }
-
-        function toggleLog() { alert("RECUERDOS ENCONTRADOS:\n\n" + gameState.memories.join("\n\n")); }
-        window.addEventListener('keydown', (e) => {
-            gameState.keys[e.code] = true;
-            if ((e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW')) {
-                if (player.grounded) { player.dy = -16; player.grounded = false; }
-                else if (gameState.canDoubleJump && !player.doubleJumped) { player.dy = -14; player.doubleJumped = true; }
-            }
-        });
-        window.addEventListener('keyup', (e) => gameState.keys[e.code] = false);
-
-        function finishGame() { gameState.active = false; document.getElementById('proposal-screen').classList.remove('hidden'); typeWriter(); }
-        function typeWriter() {
-            const txt = "Has superado las pruebas, explorado rincones profundos y vencido las dudas. Ahora, en el centro de este universo, tengo una pregunta para ti...";
-            let i = 0, target = document.getElementById("typing-text"); target.innerHTML = "";
-            let question = document.getElementById("proposal-question");
-            question.classList.add("hidden");
-            question.style.opacity = 0;
-
-            function type() {
-                if (i < txt.length) {
-                    target.innerHTML += txt.charAt(i);
-                    i++;
-                    setTimeout(type, 45);
-                } else {
-                    // Show the proposal question with a gorgeous glowing fade-in and scale effect!
-                    question.classList.remove("hidden");
-                    question.style.transition = "opacity 1.8s ease, transform 1.8s ease";
-                    question.style.transform = "scale(0.95)";
-                    setTimeout(() => {
-                        question.style.opacity = 1;
-                        question.style.transform = "scale(1)";
-                        document.getElementById('yesBtn').classList.remove('hidden');
-                        document.getElementById('noBtn').classList.remove('hidden');
-                        resetNoButtonPosition();
-                    }, 100);
-                }
-            }
-            type();
-        }
-        function moveNo() {
-            const b = document.getElementById('noBtn');
-            
-            // On first move, teleport to body to escape parent filters/centering
-            if (b.parentElement.id !== 'body-node') {
-                b.style.position = 'fixed';
-                b.style.zIndex = '9999';
-                document.body.appendChild(b);
-                b.id = 'noBtn'; // redundant but safe
-            }
-
-            b.classList.remove('hidden');
-            const btnWidth = b.offsetWidth || 100;
-            const btnHeight = b.offsetHeight || 50;
-            const margin = 80; 
-            
-            const maxX = window.innerWidth - btnWidth - margin;
-            const maxY = window.innerHeight - btnHeight - margin;
-            
-            let newX = margin + Math.random() * (maxX - margin);
-            let newY = margin + Math.random() * (maxY - margin);
-            
-            newX = Math.min(Math.max(newX, margin), maxX);
-            newY = Math.min(Math.max(newY, margin), maxY);
-            
-            b.style.left = newX + 'px';
-            b.style.top = newY + 'px';
-        }
-        function resetNoButtonPosition() {
-            // Do nothing initially, let it stay in its HTML position next to YES
-        }
-        function acceptProposal() { confetti({ particleCount: 500, spread: 160, origin: { y: 0.6 } }); setTimeout(() => { alert("¡Sabía que nuestro destino estaba escrito en las estrellas! ❤️"); }, 500); }
-
-        // Touch handling
-        function initTouch() {
-            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-            if (isTouch) document.getElementById('touch-controls').classList.remove('hidden');
-
-            const bindTouch = (id, key) => {
-                const el = document.getElementById(id);
-                el.addEventListener('touchstart', (e) => { e.preventDefault(); gameState.keys[key] = true; if (key === 'Space') handleJump(); });
-                el.addEventListener('touchend', (e) => { e.preventDefault(); gameState.keys[key] = false; });
-            };
-
-            bindTouch('ctrl-left', 'ArrowLeft');
-            bindTouch('ctrl-right', 'ArrowRight');
-            bindTouch('ctrl-jump', 'Space');
-        }
-
-        function handleJump() {
-            if (player.grounded) { player.dy = -16; player.grounded = false; }
-            else if (gameState.canDoubleJump && !player.doubleJumped) { player.dy = -14; player.doubleJumped = true; }
-        }
-
-        initTouch();
-    </script>
+    <script src="game.js"></script>
 </body>
 
 </html>
